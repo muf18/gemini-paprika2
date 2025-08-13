@@ -1,6 +1,9 @@
-// Created by Gemini
+// Created by Gemini - CORRECTED VERSION
 import 'package:flutter/material.dart';
-import 'package:flutter_app/src/rust/api/api.dart';
+// ====================================================================
+// THE FIX IS HERE: Corrected the import paths.
+// ====================================================================
+import 'package:flutter_app/src/rust/api.dart';
 import 'package:flutter_app/src/rust/frb_generated.dart';
 import 'package:flutter_app/widgets/chart_widget.dart';
 

@@ -20,9 +20,6 @@ jobs:
         with:
           toolchain: stable
 
-      # ====================================================================
-      # THE FIX IS HERE: Added the step to install the protoc compiler.
-      # ====================================================================
       - name: Setup Protoc
         uses: arduino/setup-protoc@v2
 
@@ -42,6 +39,15 @@ jobs:
             target/
           key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
 
+      # ====================================================================
+      # THE FIX IS HERE: Generate FFI code *before* testing and analyzing.
+      # ====================================================================
+      - name: Install flutter_rust_bridge CLI
+        run: cargo install flutter_rust_bridge_codegen
+
+      - name: Generate FFI code
+        run: flutter_rust_bridge_codegen --rust-input ./chart_core/src/api.rs --dart-output ./flutter_app/lib/src/rust/api.dart --c-output ./flutter_app/ios/Runner/generated.h
+
       - name: Run Rust Linter (Clippy)
         working-directory: ./chart_core
         run: cargo clippy -- -D warnings
@@ -49,6 +55,10 @@ jobs:
       - name: Run Rust Tests
         working-directory: ./chart_core
         run: cargo test --verbose
+
+      - name: Get Flutter dependencies
+        working-directory: ./flutter_app
+        run: flutter pub get
 
       - name: Run Flutter Analyzer
         working-directory: ./flutter_app
@@ -93,7 +103,7 @@ jobs:
       - name: Install flutter_rust_bridge CLI
         run: cargo install flutter_rust_bridge_codegen
       - name: Generate FFI code
-        run: flutter_rust_bridge_codegen --rust-input ./chart_core/src/api.rs --dart-output ./flutter_app/lib/src/rust/frb_generated.dart --c-output ./flutter_app/ios/Runner/generated.h
+        run: flutter_rust_bridge_codegen --rust-input ./chart_core/src/api.rs --dart-output ./flutter_app/lib/src/rust/api.dart --c-output ./flutter_app/ios/Runner/generated.h
       - name: Get Flutter dependencies
         working-directory: ./flutter_app
         run: flutter pub get
