@@ -1,5 +1,5 @@
 // Created by Gemini - CORRECTED VERSION
-use crate::frb_generated::StreamSink; // THE FIX IS HERE: Corrected the import path.
+use crate::frb_generated::StreamSink;
 use lazy_static::lazy_static;
 use std::time::Duration;
 use tokio::runtime::Runtime;
@@ -38,10 +38,12 @@ pub fn subscribe_to_price_updates(_symbol: String, sink: StreamSink<String>) -> 
     // Spawn another task to bridge the MPSC channel to the FFI sink
     RUNTIME.spawn(async move {
         while let Some(data) = rx.recv().await {
-            if !sink.add(data) {
+            // THE FIX IS HERE: The `add` method returns a boolean. We check it directly.
+            if !sink.add(data)? {
                 break;
             }
         }
+        Ok::<_, anyhow::Error>(())
     });
 
     Ok(())
