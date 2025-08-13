@@ -39,20 +39,16 @@ pub fn subscribe_to_price_updates(_symbol: String, sink: StreamSink<String>) -> 
     RUNTIME.spawn(async move {
         while let Some(data) = rx.recv().await {
             // ====================================================================
-            // THE FIX IS HERE: Use a `match` statement to handle the Result.
+            // THE FIX IS HERE: The match statement now correctly handles the new
+            // return type of `sink.add()`, which is `Result<(), ...>`.
             // ====================================================================
             match sink.add(data) {
-                Ok(true) => {
+                Ok(_) => {
                     // All good, continue loop
                 }
-                Ok(false) => {
-                    // The stream has been closed by Dart, so we can stop.
-                    println!("[RUST] Stream closed by Dart.");
-                    break;
-                }
                 Err(e) => {
-                    // An error occurred while sending data to Dart.
-                    println!("[RUST] Error sending to stream: {:?}", e);
+                    // An error occurred, which includes the stream being closed.
+                    println!("[RUST] Stream sink error: {:?}", e);
                     break;
                 }
             }
