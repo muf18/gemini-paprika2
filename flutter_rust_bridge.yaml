@@ -1,4 +1,4 @@
-# Created by Gemini - CORRECTED VERSION for flutter_rust_bridge_codegen v2
+# Created by Gemini - FINAL CORRECTED VERSION for flutter_rust_bridge_codegen v2
 
 # Path to the root of the Rust crate.
 rust_root: chart_core/
@@ -10,7 +10,11 @@ rust_input: src/api.rs
 dart_output: flutter_app/lib/src/rust/api.dart
 
 # Output C header for iOS. Path is relative to the project root.
-c_output: flutter_app/ios/Runner/generated.h
+c_output:
+  - flutter_app/ios/Runner/generated.h
 
+# ====================================================================
+# THE FIX IS HERE: Replaced `dart_decl_class_name` with the correct key.
+# ====================================================================
 # The class name for the generated Dart API.
-dart_decl_class_name: Api
+dart_entrypoint_class_name: Api
