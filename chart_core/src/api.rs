@@ -1,4 +1,4 @@
-// Created by Gemini - CORRECTED VERSION
+// Created by Gemini - FINAL CORRECTED VERSION
 use crate::frb_generated::StreamSink;
 use lazy_static::lazy_static;
 use std::time::Duration;
@@ -38,12 +38,25 @@ pub fn subscribe_to_price_updates(_symbol: String, sink: StreamSink<String>) -> 
     // Spawn another task to bridge the MPSC channel to the FFI sink
     RUNTIME.spawn(async move {
         while let Some(data) = rx.recv().await {
-            // THE FIX IS HERE: The `add` method returns a boolean. We check it directly.
-            if !sink.add(data)? {
-                break;
+            // ====================================================================
+            // THE FIX IS HERE: Use a `match` statement to handle the Result.
+            // ====================================================================
+            match sink.add(data) {
+                Ok(true) => {
+                    // All good, continue loop
+                }
+                Ok(false) => {
+                    // The stream has been closed by Dart, so we can stop.
+                    println!("[RUST] Stream closed by Dart.");
+                    break;
+                }
+                Err(e) => {
+                    // An error occurred while sending data to Dart.
+                    println!("[RUST] Error sending to stream: {:?}", e);
+                    break;
+                }
             }
         }
-        Ok::<_, anyhow::Error>(())
     });
 
     Ok(())
