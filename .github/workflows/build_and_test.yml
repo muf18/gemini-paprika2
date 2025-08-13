@@ -43,10 +43,10 @@ jobs:
         run: cargo install flutter_rust_bridge_codegen
 
       # ====================================================================
-      # THE FIX IS HERE: Added the `create chart_core` command.
+      # THE FIX IS HERE: Use the new `generate` command, which reads the config file.
       # ====================================================================
       - name: Generate FFI code
-        run: flutter_rust_bridge_codegen create chart_core --rust-input ./chart_core/src/api.rs --dart-output ./flutter_app/lib/src/rust/api.dart --c-output ./flutter_app/ios/Runner/generated.h
+        run: flutter_rust_bridge_codegen generate
 
       - name: Run Rust Linter (Clippy)
         working-directory: ./chart_core
@@ -104,10 +104,10 @@ jobs:
         run: cargo install flutter_rust_bridge_codegen
 
       # ====================================================================
-      # THE FIX IS HERE: Added the `create chart_core` command.
+      # THE FIX IS HERE: Use the new `generate` command, which reads the config file.
       # ====================================================================
       - name: Generate FFI code
-        run: flutter_rust_bridge_codegen create chart_core --rust-input ./chart_core/src/api.rs --dart-output ./flutter_app/lib/src/rust/api.dart --c-output ./flutter_app/ios/Runner/generated.h
+        run: flutter_rust_bridge_codegen generate
 
       - name: Get Flutter dependencies
         working-directory: ./flutter_app
