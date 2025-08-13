@@ -3,14 +3,17 @@
 # Path to the root of the Rust crate.
 rust_root: chart_core/
 
-# Input Rust files, specified as a Rust module path.
-rust_input: crate::api
+# Input Rust files, specified as a list of paths.
+rust_input:
+  - "src/api.rs"
 
-# Output Dart file. Path is relative to the project root.
-dart_output: flutter_app/lib/src/rust/api.dart
+# Output Dart directory.
+dart_output:
+  # Path is relative to the flutter_app directory.
+  path: "lib/src/rust"
+  # The class name for the generated Dart API.
+  entrypoint_class_name: Api
 
 # Output C header for iOS. Path is relative to the project root.
-c_output: flutter_app/ios/Runner/generated.h
-
-# The class name for the generated Dart API.
-dart_entrypoint_class_name: Api```
+c_output:
+  - "flutter_app/ios/Runner/generated.h"
