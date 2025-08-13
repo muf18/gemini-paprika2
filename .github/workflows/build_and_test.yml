@@ -1,4 +1,4 @@
-# Created by Gemini
+# Created by Gemini - CORRECTED VERSION
 name: Build, Test, and Package (Debug/Test)
 
 on:
@@ -14,14 +14,23 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+
       - name: Setup Rust
         uses: actions-rs/toolchain@v1
         with:
           toolchain: stable
+
+      # ====================================================================
+      # THE FIX IS HERE: Added the step to install the protoc compiler.
+      # ====================================================================
+      - name: Setup Protoc
+        uses: arduino/setup-protoc@v2
+
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
           channel: 'stable'
+
       - name: Cache Cargo dependencies
         uses: actions/cache@v3
         with:
@@ -32,12 +41,15 @@ jobs:
             ~/.cargo/git/db/
             target/
           key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+
       - name: Run Rust Linter (Clippy)
         working-directory: ./chart_core
         run: cargo clippy -- -D warnings
+
       - name: Run Rust Tests
         working-directory: ./chart_core
         run: cargo test --verbose
+
       - name: Run Flutter Analyzer
         working-directory: ./flutter_app
         run: flutter analyze
