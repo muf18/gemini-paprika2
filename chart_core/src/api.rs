@@ -1,4 +1,4 @@
-// Created by Gemini
+// Created by Gemini - CORRECTED VERSION
 use flutter_rust_bridge::StreamSink;
 use lazy_static::lazy_static;
 use std::time::Duration;
@@ -19,7 +19,12 @@ pub fn greet(name: String) -> String {
 
 // This function will be callable from Dart.
 // It will spawn the Rust logic and stream results back.
-pub fn subscribe_to_price_updates(symbol: String, sink: StreamSink<String>) -> Result<(), anyhow::Error> {
+//
+// ====================================================================
+// THE FIX IS HERE: The `symbol` parameter is now `_symbol` to indicate
+// it is intentionally unused in this placeholder implementation.
+// ====================================================================
+pub fn subscribe_to_price_updates(_symbol: String, sink: StreamSink<String>) -> Result<(), anyhow::Error> {
     let (tx, mut rx) = mpsc::channel(100);
 
     // Spawn a Tokio task to simulate receiving data
