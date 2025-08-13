@@ -1,0 +1,20 @@
+// Created by Gemini
+syntax = "proto3";
+
+package models;
+
+message PriceUpdate {
+  string symbol = 1;
+  string venue = 2;
+  int64 sequence_number = 3;
+  string price = 4;
+  string size = 5;
+  string side = 6;
+  string best_bid = 7;
+  string best_ask = 8;
+  string vwap = 9;
+  string cum_volume = 10;
+  string timeframe = 11;
+  string exchange_timestamp = 12;
+  string client_received_timestamp = 13;
+}

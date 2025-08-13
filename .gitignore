@@ -1,0 +1,47 @@
+# Created by Gemini
+
+# General
+.DS_Store
+*.log
+.idea/
+.vscode/
+
+# Rust
+# The /target directory contains all build artifacts and intermediate files.
+/target/
+# Cargo.lock should be committed for application projects to ensure reproducible builds.
+# Cargo.lock
+
+# Flutter
+# The /build directory contains all compiled application artifacts.
+/build/
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.pub-cache/
+# pubspec.lock should be committed for reproducible builds.
+# pubspec.lock
+
+# Android specific
+/flutter_app/android/app/build/
+/flutter_app/android/.gradle/
+/flutter_app/android/app/keystore.jks
+/flutter_app/android/key.properties
+/flutter_app/android/local.properties
+
+# iOS specific
+/flutter_app/ios/Pods/
+/flutter_app/ios/Flutter/App.framework
+/flutter_app/ios/Flutter/engine.framework
+/flutter_app/ios/Flutter/.podrepo
+/flutter_app/ios/.symlinks/
+/flutter_app/ios/Runner/GeneratedPluginRegistrant.*
+/flutter_app/ios/Runner.xcworkspace/
+*.p12
+*.mobileprovision
+
+# Generated FFI files
+# These are regenerated on every build, so they don't need to be in source control.
+/chart_core/src/models/models.rs
+/flutter_app/lib/src/rust/frb_generated.dart
+/flutter_app/ios/Runner/generated.h

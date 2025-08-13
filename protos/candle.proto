@@ -1,0 +1,16 @@
+// Created by Gemini
+syntax = "proto3";
+
+package models;
+
+message Candle {
+  string symbol = 1;
+  string timeframe = 2;
+  string open_time = 3;
+  string close_time = 4;
+  string open = 5;
+  string high = 6;
+  string low = 7;
+  string close = 8;
+  string volume = 9;
+}

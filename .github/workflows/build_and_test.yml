@@ -1,0 +1,128 @@
+# Created by Gemini
+name: Build, Test, and Package (Debug/Test)
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  lint-and-test:
+    name: Lint & Test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Setup Rust
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+      - name: Cache Cargo dependencies
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.cargo/bin/
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/.cargo/git/db/
+            target/
+          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+      - name: Run Rust Linter (Clippy)
+        working-directory: ./chart_core
+        run: cargo clippy -- -D warnings
+      - name: Run Rust Tests
+        working-directory: ./chart_core
+        run: cargo test --verbose
+      - name: Run Flutter Analyzer
+        working-directory: ./flutter_app
+        run: flutter analyze
+
+  build-artifacts:
+    name: Build for ${{ matrix.os }} (Debug)
+    needs: lint-and-test
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Setup Rust and Protoc
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+      - uses: arduino/setup-protoc@v2
+      - name: Setup Java (for Android build)
+        if: matrix.os == 'ubuntu-latest'
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'zulu'
+          java-version: '17'
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+      - name: Cache dependencies
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.cargo/bin/
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/.cargo/git/db/
+            target/
+            ~/.pub-cache
+          key: ${{ runner.os }}-build-deps-${{ hashFiles('**/Cargo.lock', '**/pubspec.lock') }}
+      - name: Install flutter_rust_bridge CLI
+        run: cargo install flutter_rust_bridge_codegen
+      - name: Generate FFI code
+        run: flutter_rust_bridge_codegen --rust-input ./chart_core/src/api.rs --dart-output ./flutter_app/lib/src/rust/frb_generated.dart --c-output ./flutter_app/ios/Runner/generated.h
+      - name: Get Flutter dependencies
+        working-directory: ./flutter_app
+        run: flutter pub get
+      - name: Build Android Debug APK
+        if: matrix.os == 'ubuntu-latest'
+        working-directory: ./flutter_app
+        run: flutter build apk --debug
+      - name: Build iOS Simulator App
+        if: matrix.os == 'macos-latest'
+        working-directory: ./flutter_app
+        run: flutter build ios --simulator --no-codesign
+      - name: Package iOS Simulator App
+        if: matrix.os == 'macos-latest'
+        run: |
+          cd flutter_app/build/ios/iphonesimulator
+          zip -r ../../../Runner-simulator.app.zip Runner.app
+      - name: Build macOS Debug App
+        if: matrix.os == 'macos-latest'
+        working-directory: ./flutter_app
+        run: flutter build macos --debug
+      - name: Package macOS Debug App
+        if: matrix.os == 'macos-latest'
+        run: |
+          cd flutter_app/build/macos/Build/Products/Debug
+          zip -r ../../../../../macos-debug.zip *.app
+      - name: Build Windows Debug App
+        if: matrix.os == 'windows-latest'
+        working-directory: ./flutter_app
+        run: flutter build windows --debug
+      - name: Package Windows Debug App
+        if: matrix.os == 'windows-latest'
+        uses: papeloto/action-zip@v1
+        with:
+          files: flutter_app/build/windows/runner/Debug/
+          dest: flutter_app/windows-debug.zip
+      - name: Upload Build Artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: build-${{ matrix.os }}
+          path: |
+            flutter_app/build/app/outputs/flutter-apk/app-debug.apk
+            flutter_app/Runner-simulator.app.zip
+            flutter_app/macos-debug.zip
+            flutter_app/windows-debug.zip
