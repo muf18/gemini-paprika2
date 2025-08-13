@@ -1,20 +1,16 @@
-# Created by Gemini - NEW FILE
-# Configuration for flutter_rust_bridge_codegen v2
+# Created by Gemini - CORRECTED VERSION for flutter_rust_bridge_codegen v2
 
-# The Rust crate that contains your FFI logic.
-rust_crate_dir: ./chart_core/
+# Path to the root of the Rust crate.
+rust_root: chart_core/
 
-# The output path for the generated Dart files.
-dart_output_path: ./flutter_app/lib/src/rust/
+# Input Rust files. Paths are relative to the `rust_root`.
+rust_input: src/api.rs
 
-# The entry point for the Rust API.
-rust_input: ./chart_core/src/api.rs
+# Output Dart file. Path is relative to the project root.
+dart_output: flutter_app/lib/src/rust/api.dart
 
-# The output path for the generated C header file for iOS.
-c_output:
-  - ./flutter_app/ios/Runner/generated.h
+# Output C header for iOS. Path is relative to the project root.
+c_output: flutter_app/ios/Runner/generated.h
 
 # The class name for the generated Dart API.
-dart_decl_output:
-  path: ./flutter_app/lib/src/rust/api.dart
-  class_name: Api
+dart_decl_class_name: Api
