@@ -9,12 +9,11 @@ rust_input: src/api.rs
 # Output Dart file. Path is relative to the project root.
 dart_output: flutter_app/lib/src/rust/api.dart
 
+# ====================================================================
+# THE FIX IS HERE: Changed `c_output` from a list to a simple string.
+# ====================================================================
 # Output C header for iOS. Path is relative to the project root.
-c_output:
-  - flutter_app/ios/Runner/generated.h
+c_output: flutter_app/ios/Runner/generated.h
 
-# ====================================================================
-# THE FIX IS HERE: Replaced `dart_decl_class_name` with the correct key.
-# ====================================================================
 # The class name for the generated Dart API.
 dart_entrypoint_class_name: Api
