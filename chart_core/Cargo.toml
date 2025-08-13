@@ -1,4 +1,4 @@
-# Created by Gemini
+# Created by Gemini - CORRECTED VERSION
 [package]
 name = "chart_core"
 version = "0.1.0"
@@ -21,6 +21,10 @@ chrono = { version = "0.4", features = ["serde"] }
 rust_decimal = { version = "1.33", features = ["serde"] }
 async-trait = "0.1"
 lazy_static = "1.4"
+
+# THE FIX IS HERE: Added the missing `anyhow` dependency.
+anyhow = "1.0"
+
 
 [build-dependencies]
 prost-build = "0.12"
