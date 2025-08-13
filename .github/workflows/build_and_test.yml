@@ -43,10 +43,11 @@ jobs:
         run: cargo install flutter_rust_bridge_codegen
 
       # ====================================================================
-      # THE FIX IS HERE: Use the new `generate` command, which reads the config file.
+      # THE FIX IS HERE: Added `--no-dart-format` to prevent the buggy
+      # auto-formatting step within the codegen tool.
       # ====================================================================
       - name: Generate FFI code
-        run: flutter_rust_bridge_codegen generate
+        run: flutter_rust_bridge_codegen generate --no-dart-format
 
       - name: Run Rust Linter (Clippy)
         working-directory: ./chart_core
@@ -104,10 +105,11 @@ jobs:
         run: cargo install flutter_rust_bridge_codegen
 
       # ====================================================================
-      # THE FIX IS HERE: Use the new `generate` command, which reads the config file.
+      # THE FIX IS HERE: Added `--no-dart-format` to prevent the buggy
+      # auto-formatting step within the codegen tool.
       # ====================================================================
       - name: Generate FFI code
-        run: flutter_rust_bridge_codegen generate
+        run: flutter_rust_bridge_codegen generate --no-dart-format
 
       - name: Get Flutter dependencies
         working-directory: ./flutter_app

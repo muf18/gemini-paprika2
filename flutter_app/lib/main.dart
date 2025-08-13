@@ -1,11 +1,11 @@
 // Created by Gemini - CORRECTED VERSION
 import 'package:flutter/material.dart';
 // ====================================================================
-// THE FIX IS HERE: Corrected the import paths.
+// THE FIX IS HERE: Changed from `package:` imports to relative imports.
 // ====================================================================
-import 'package:flutter_app/src/rust/api.dart';
-import 'package:flutter_app/src/rust/frb_generated.dart';
-import 'package:flutter_app/widgets/chart_widget.dart';
+import 'src/rust/api.dart';
+import 'src/rust/frb_generated.dart';
+import 'widgets/chart_widget.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
