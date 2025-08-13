@@ -1,4 +1,4 @@
-// Created by Gemini
+// Created by Gemini - FINAL CORRECTED VERSION
 use super::{AdapterError, ExchangeAdapter};
 use async_trait::async_trait;
 use futures_util::{Stream, StreamExt, SinkExt};
@@ -8,7 +8,12 @@ use tokio_tungstenite::{connect_async, tungstenite::protocol::Message};
 
 const COINBASE_WS_URL: &str = "wss://ws-feed.exchange.coinbase.com";
 
-pub struct CoinbaseAdapter;
+// ====================================================================
+// THE FIX IS HERE: Changed from a unit struct `struct CoinbaseAdapter;`
+// to a regular struct with an empty body `struct CoinbaseAdapter {}`.
+// This makes it parsable by the FFI code generator.
+// ====================================================================
+pub struct CoinbaseAdapter {}
 
 #[async_trait]
 impl ExchangeAdapter for CoinbaseAdapter {
