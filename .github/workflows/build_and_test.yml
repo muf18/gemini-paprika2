@@ -39,14 +39,14 @@ jobs:
             target/
           key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
 
-      # ====================================================================
-      # THE FIX IS HERE: Generate FFI code *before* testing and analyzing.
-      # ====================================================================
       - name: Install flutter_rust_bridge CLI
         run: cargo install flutter_rust_bridge_codegen
 
+      # ====================================================================
+      # THE FIX IS HERE: Added the `create chart_core` command.
+      # ====================================================================
       - name: Generate FFI code
-        run: flutter_rust_bridge_codegen --rust-input ./chart_core/src/api.rs --dart-output ./flutter_app/lib/src/rust/api.dart --c-output ./flutter_app/ios/Runner/generated.h
+        run: flutter_rust_bridge_codegen create chart_core --rust-input ./chart_core/src/api.rs --dart-output ./flutter_app/lib/src/rust/api.dart --c-output ./flutter_app/ios/Runner/generated.h
 
       - name: Run Rust Linter (Clippy)
         working-directory: ./chart_core
@@ -102,8 +102,13 @@ jobs:
           key: ${{ runner.os }}-build-deps-${{ hashFiles('**/Cargo.lock', '**/pubspec.lock') }}
       - name: Install flutter_rust_bridge CLI
         run: cargo install flutter_rust_bridge_codegen
+
+      # ====================================================================
+      # THE FIX IS HERE: Added the `create chart_core` command.
+      # ====================================================================
       - name: Generate FFI code
-        run: flutter_rust_bridge_codegen --rust-input ./chart_core/src/api.rs --dart-output ./flutter_app/lib/src/rust/api.dart --c-output ./flutter_app/ios/Runner/generated.h
+        run: flutter_rust_bridge_codegen create chart_core --rust-input ./chart_core/src/api.rs --dart-output ./flutter_app/lib/src/rust/api.dart --c-output ./flutter_app/ios/Runner/generated.h
+
       - name: Get Flutter dependencies
         working-directory: ./flutter_app
         run: flutter pub get
